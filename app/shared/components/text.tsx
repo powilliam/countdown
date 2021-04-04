@@ -12,7 +12,13 @@ import {
   BorderProps,
 } from 'styled-system';
 
-export enum TextVariants {}
+export enum TextVariants {
+  THIN = 'thin',
+  LIGHT = 'light',
+  REGULAR = 'regular',
+  MEDIUM = 'medium',
+  BOLD = 'bold',
+}
 
 export interface WithVariant {
   variant?: TextVariants;
@@ -31,6 +37,26 @@ export const Text = styled.Text<TextProps>`
   ${layout};
   ${border};
   ${variant({
-    variants: {},
+    variants: {
+      [TextVariants.THIN]: {
+        fontFamily: 'RobotoMono-Thin',
+      },
+      [TextVariants.LIGHT]: {
+        fontFamily: 'RobotoMono-Light',
+      },
+      [TextVariants.REGULAR]: {
+        fontFamily: 'RobotoMono-Regular',
+      },
+      [TextVariants.MEDIUM]: {
+        fontFamily: 'RobotoMono-Medium',
+      },
+      [TextVariants.BOLD]: {
+        fontFamily: 'RobotoMono-Bold',
+      },
+    },
   })}
 `;
+
+Text.defaultProps = {
+  variant: TextVariants.REGULAR,
+};
