@@ -5,11 +5,13 @@ import {
   color,
   layout,
   border,
+  typography,
   variant,
   SpaceProps,
   ColorProps,
   LayoutProps,
   BorderProps,
+  TypographyProps,
 } from 'styled-system';
 
 export enum TextVariants {
@@ -29,6 +31,7 @@ export type TextProps = RNTextProps &
   ColorProps &
   LayoutProps &
   BorderProps &
+  TypographyProps &
   WithVariant;
 
 export const Text = styled.Text<TextProps>`
@@ -36,6 +39,7 @@ export const Text = styled.Text<TextProps>`
   ${color};
   ${layout};
   ${border};
+  ${typography};
   ${variant({
     variants: {
       [TextVariants.THIN]: {
