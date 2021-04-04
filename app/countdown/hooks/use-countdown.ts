@@ -1,5 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 
+import { usePersistedState } from 'app/shared/hooks/use-persisted-state';
+
 export interface FormatterProps extends Omit<CountdownConfig, 'formatter'> {
   elapsed: number;
 }
@@ -18,8 +20,11 @@ export interface Countdown {
 }
 
 export function useCountdown(config: CountdownConfig): Countdown {
-  const [counting, countingSet] = useState<boolean>(false);
-  const [elapsed, elapsedSet] = useState<number>(0);
+  const [counting, countingSet] = usePersistedState<boolean>(
+    '@counting',
+    false,
+  );
+  const [elapsed, elapsedSet] = usePersistedState<number>('@elapsed', 0);
 
   const memoizedElapsed = useMemo(
     () =>
@@ -33,11 +38,14 @@ export function useCountdown(config: CountdownConfig): Countdown {
     [config, elapsed],
   );
 
-  const toggle = useCallback(() => countingSet(!counting), [counting]);
+  const toggle = useCallback(() => countingSet(!counting), [
+    counting,
+    countingSet,
+  ]);
   const reset = useCallback(() => {
     countingSet(false);
     elapsedSet(0);
-  }, []);
+  }, [countingSet, elapsedSet]);
 
   useEffect(() => {
     if (!counting) {
@@ -53,7 +61,7 @@ export function useCountdown(config: CountdownConfig): Countdown {
     }, config?.interval ?? 1000);
 
     return () => clearInterval(interval);
-  }, [counting, elapsed, config, reset]);
+  }, [counting, elapsed, config, reset, elapsedSet]);
 
   return { counting, elapsed: memoizedElapsed, toggle, reset };
 }
