@@ -1,18 +1,23 @@
 import React from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
-import { BorderlessButton } from 'react-native-gesture-handler';
 import { useTheme } from 'styled-components';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Column } from 'app/shared/components/column';
 import { Row } from 'app/shared/components/row';
 import { Text, TextVariants } from 'app/shared/components/text';
+import { Chip } from 'app/shared/components/chip';
+import { FloatingActionButton } from 'app/shared/components/floating-action-button';
 
 import { useCountdown } from 'app/countdown/hooks/use-countdown';
 
+import { formatter } from 'app/countdown/utils/elapsed-formatter';
+
 export function CountdownModule() {
   const { black, white } = useTheme();
-  const { counting, elapsed, toggle } = useCountdown();
+  const { counting, elapsed, toggle, reset } = useCountdown({
+    duration: 60 * 60,
+    formatter,
+  });
 
   return (
     <Column
@@ -24,46 +29,7 @@ export function CountdownModule() {
       <StatusBar backgroundColor={black.default} barStyle="light-content" />
 
       <Row>
-        <Row
-          as={BorderlessButton}
-          px="12px"
-          alignItems="center"
-          height={32}
-          bg={black.primary}
-          borderRadius={32}>
-          <MaterialCommunityIcons
-            name="briefcase-outline"
-            size={18}
-            color={white.primary}
-          />
-
-          <Text
-            ml="8px"
-            fontSize="14px"
-            letterSpacing="0.25px"
-            color={white.primary}>
-            60 min
-          </Text>
-        </Row>
-
-        <Row
-          as={BorderlessButton}
-          px="12px"
-          alignItems="center"
-          ml="8px"
-          height={32}
-          bg={black.primary}
-          borderRadius={32}>
-          <MaterialCommunityIcons name="bed" size={18} color={white.primary} />
-
-          <Text
-            ml="8px"
-            fontSize="14px"
-            letterSpacing="0.25px"
-            color={white.primary}>
-            30 min
-          </Text>
-        </Row>
+        <Chip icon="briefcase-outline" text="60 min" />
       </Row>
 
       <Column alignSelf="center" alignItems="center">
@@ -80,25 +46,16 @@ export function CountdownModule() {
         </Text>
       </Column>
 
-      <Column alignSelf="flex-end">
-        <Column
-          as={BorderlessButton}
-          width="56px"
-          height="56px"
-          mr="-8px"
-          mb="-8px"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius={32}
-          bg={black.primary}
-          onPress={toggle}>
-          <MaterialCommunityIcons
-            name={counting ? 'pause' : 'play'}
-            size={24}
-            color={white.default}
-          />
-        </Column>
-      </Column>
+      <Row alignSelf="center">
+        {counting && (
+          <FloatingActionButton mr="8px" icon="stop" onPress={reset} />
+        )}
+
+        <FloatingActionButton
+          icon={counting ? 'pause' : 'play'}
+          onPress={toggle}
+        />
+      </Row>
     </Column>
   );
 }

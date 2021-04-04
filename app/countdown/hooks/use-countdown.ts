@@ -1,16 +1,43 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+
+export interface FormatterProps extends Omit<CountdownConfig, 'formatter'> {
+  elapsed: number;
+}
+
+export interface CountdownConfig {
+  duration: number;
+  interval?: number;
+  formatter?(p0: FormatterProps): any;
+}
 
 export interface Countdown {
   counting: boolean;
-  elapsed: number;
+  elapsed: any;
   toggle(): void;
+  reset(): void;
 }
 
-export function useCountdown(): Countdown {
+export function useCountdown(config: CountdownConfig): Countdown {
   const [counting, countingSet] = useState<boolean>(false);
   const [elapsed, elapsedSet] = useState<number>(0);
 
+  const memoizedElapsed = useMemo(
+    () =>
+      config?.formatter
+        ? config?.formatter({
+            elapsed,
+            duration: config.duration,
+            interval: config?.interval,
+          })
+        : elapsed,
+    [config, elapsed],
+  );
+
   const toggle = useCallback(() => countingSet(!counting), [counting]);
+  const reset = useCallback(() => {
+    countingSet(false);
+    elapsedSet(0);
+  }, []);
 
   useEffect(() => {
     if (!counting) {
@@ -18,11 +45,15 @@ export function useCountdown(): Countdown {
     }
 
     const interval = setInterval(() => {
-      elapsedSet(it => it + 1);
-    }, 1000);
+      if (elapsed === config.duration) {
+        reset();
+      } else {
+        elapsedSet(it => it + 1);
+      }
+    }, config?.interval ?? 1000);
 
     return () => clearInterval(interval);
-  }, [counting]);
+  }, [counting, elapsed, config, reset]);
 
-  return { counting, elapsed, toggle };
+  return { counting, elapsed: memoizedElapsed, toggle, reset };
 }
