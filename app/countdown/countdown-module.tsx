@@ -2,6 +2,7 @@ import React from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import { BorderlessButton } from 'react-native-gesture-handler';
 import { useTheme } from 'styled-components';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import Reanimated, {
 //   useSharedValue,
 //   useAnimatedStyle,
@@ -14,10 +15,6 @@ import { useTheme } from 'styled-components';
 import { Column } from 'app/shared/components/column';
 import { Row } from 'app/shared/components/row';
 import { Text, TextVariants } from 'app/shared/components/text';
-
-// import { SVGBriefcaseOutline } from 'app/shared/components/icons/SVGBriefcaseOutline';
-// import { SVGBed } from 'app/shared/components/icons/SVGBed';
-import { SVGChevronDoubleDown } from 'app/shared/components/icons/SVGChevronDoubleDown';
 
 export function CountdownModule() {
   const { black, white } = useTheme();
@@ -55,10 +52,14 @@ export function CountdownModule() {
           height={32}
           bg={black.primary}
           borderRadius={32}>
-          {/* <SVGBriefcaseOutline color={white.primary} opacity={0.8} /> */}
+          <MaterialCommunityIcons
+            name="briefcase-outline"
+            size={18}
+            color={white.primary}
+          />
 
           <Text
-            // ml="8px"
+            ml="8px"
             fontSize="14px"
             letterSpacing="0.25px"
             color={white.primary}>
@@ -74,10 +75,10 @@ export function CountdownModule() {
           height={32}
           bg={black.primary}
           borderRadius={32}>
-          {/* <SVGBed color={white.primary} opacity={0.8} /> */}
+          <MaterialCommunityIcons name="bed" size={18} color={white.primary} />
 
           <Text
-            // ml="8px"
+            ml="8px"
             fontSize="14px"
             letterSpacing="0.25px"
             color={white.primary}>
@@ -100,12 +101,16 @@ export function CountdownModule() {
         </Text>
       </Column>
 
-      <Column alignSelf="center">
+      <Column alignSelf="center" alignItems="center">
         <Text mb="4px" color={white.secondary}>
           Tap on the screen to start
         </Text>
 
-        <SVGChevronDoubleDown color={white.secondary} />
+        <MaterialCommunityIcons
+          name="chevron-double-down"
+          size={24}
+          color={white.secondary}
+        />
       </Column>
     </Column>
   );
