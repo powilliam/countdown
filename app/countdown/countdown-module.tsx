@@ -3,37 +3,16 @@ import { SafeAreaView, StatusBar } from 'react-native';
 import { BorderlessButton } from 'react-native-gesture-handler';
 import { useTheme } from 'styled-components';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// import Reanimated, {
-//   useSharedValue,
-//   useAnimatedStyle,
-//   withRepeat,
-//   withSequence,
-//   withTiming,
-//   withDelay,
-// } from 'react-native-reanimated';
 
 import { Column } from 'app/shared/components/column';
 import { Row } from 'app/shared/components/row';
 import { Text, TextVariants } from 'app/shared/components/text';
 
+import { useCountdown } from 'app/countdown/hooks/use-countdown';
+
 export function CountdownModule() {
   const { black, white } = useTheme();
-  // const translateY = useSharedValue(0);
-
-  // const animatedStyle = useAnimatedStyle(() => ({
-  //   transform: [{ translateY: translateY.value }],
-  // }));
-
-  // useEffect(() => {
-  //   translateY.value = withRepeat(
-  //     withSequence(
-  //       withDelay(1000, withTiming(5)),
-  //       withTiming(-5),
-  //       withTiming(0),
-  //     ),
-  //     -1,
-  //   );
-  // }, [translateY]);
+  const { counting, elapsed, toggle } = useCountdown();
 
   return (
     <Column
@@ -89,7 +68,7 @@ export function CountdownModule() {
 
       <Column alignSelf="center" alignItems="center">
         <Text fontSize="14px" letterSpacing="0.25px" color={white.primary}>
-          RESTING
+          {counting ? 'WORKING' : 'RESTING'}
         </Text>
 
         <Text
@@ -97,20 +76,28 @@ export function CountdownModule() {
           fontSize="60px"
           letterSpacing="-0.5px"
           color={white.default}>
-          00:00
+          {elapsed}
         </Text>
       </Column>
 
-      <Column alignSelf="center" alignItems="center">
-        <Text mb="4px" color={white.secondary}>
-          Tap on the screen to start
-        </Text>
-
-        <MaterialCommunityIcons
-          name="chevron-double-down"
-          size={24}
-          color={white.secondary}
-        />
+      <Column alignSelf="flex-end">
+        <Column
+          as={BorderlessButton}
+          width="56px"
+          height="56px"
+          mr="-8px"
+          mb="-8px"
+          alignItems="center"
+          justifyContent="center"
+          borderRadius={32}
+          bg={black.primary}
+          onPress={toggle}>
+          <MaterialCommunityIcons
+            name={counting ? 'pause' : 'play'}
+            size={24}
+            color={white.default}
+          />
+        </Column>
       </Column>
     </Column>
   );
